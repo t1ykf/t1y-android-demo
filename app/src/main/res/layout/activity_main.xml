@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <Button
+        android:id="@+id/createOne"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="创建一条数据" />
+
+    <Button
+        android:id="@+id/deleteOne"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="删除一条数据" />
+
+    <Button
+        android:id="@+id/updateOne"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="修改一条数据" />
+
+    <Button
+        android:id="@+id/readOne"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="查询一条数据" />
+
+    <Button
+        android:id="@+id/readAll"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="查询全部数据（分页查询）" />
+
+    <TextView
+        android:id="@+id/result"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="RESULT" />
+
+</LinearLayout>

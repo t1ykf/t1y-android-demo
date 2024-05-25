@@ -114,7 +114,7 @@ JsonObject params = new JsonObject();
 params.addProperty("key1", "value1");
 params.addProperty("key2", "value2");
 params.addProperty("key3", "value3");
-String data = t1y.findOne("hello", params); // 调用 hello 云函数，并传递 params 数据
+String data = t1y.callFunc("hello", params); // 调用 hello 云函数，并传递 params 数据
 ```
 
 ```js

@@ -17,7 +17,7 @@ import org.json.JSONException;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Button createOne, deleteOne, updateOne, readOne, readAll;
+    private Button createOne, deleteOne, updateOne, findOne, findAll;
     private TextView result;
 
     @Override
@@ -25,19 +25,19 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // 创建一个Gson对象
+        // 创建一个 Gson 对象
         Gson gson = new Gson();
 
-        // 创建一个T1YClient对象
-        T1YClient t1y = new T1YClient("http://dev.t1y.net/api", 1001, "2c6118c4e02b40fe96f5c40ee1dc5561", "650bd657da0243b282d9cab6d75a80ff");
+        // 创建一个 T1YClient 对象
+        T1YClient t1y = new T1YClient("https://api.t1y.net", "1001", "2c6118c4e02b40fe96f5c40ee1dc5561", "650bd657da0243b282d9cab6d75a80ff");
 
         result = findViewById(R.id.result);
 
         createOne = findViewById(R.id.createOne);
         deleteOne = findViewById(R.id.deleteOne);
         updateOne = findViewById(R.id.updateOne);
-        readOne = findViewById(R.id.readOne);
-        readAll = findViewById(R.id.readAll);
+        findOne = findViewById(R.id.findOne);
+        findAll = findViewById(R.id.findAll);
 
         createOne.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -46,12 +46,11 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         MyBean myBean = new MyBean("王华", 21, "男");
-                        String data = t1y.createOne("student", myBean);
+                        String data = t1y.createOne("student", myBean); // 向 student 集合中添加一条数据
                         createOne.post(new Runnable() {
                             @Override
                             public void run() {
                                 result.setText(data);
-                                Log.i("DATA", data);
                                 Toast.makeText(MainActivity.this, data, Toast.LENGTH_SHORT).show();
                             }
                         });
@@ -66,12 +65,11 @@ public class MainActivity extends AppCompatActivity {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        String data = t1y.deleteOne("student", "65431d617ed5bb441885c097");
+                        String data = t1y.deleteOne("student", "65431d617ed5bb441885c097"); // 删除 student 集合中 ObjectID 为 65431d617ed5bb441885c097 的数据
                         createOne.post(new Runnable() {
                             @Override
                             public void run() {
                                 result.setText(data);
-                                Log.i("DATA", data);
                                 Toast.makeText(MainActivity.this, data, Toast.LENGTH_SHORT).show();
                             }
                         });
@@ -90,12 +88,11 @@ public class MainActivity extends AppCompatActivity {
                         JsonObject jsonObject = new JsonObject();
                         jsonObject.add("$set", (JsonObject) gson.toJsonTree(myBean));
                         Log.i("DATA", jsonObject.toString());
-                        String data = t1y.updateOne("student", "65431b5f7ed5bb441885c095", jsonObject);
+                        String data = t1y.updateOne("student", "65431b5f7ed5bb441885c095", jsonObject); // 修改 student 集合中 ObjectID 为 65431b5f7ed5bb441885c095 的数据
                         createOne.post(new Runnable() {
                             @Override
                             public void run() {
                                 result.setText(data);
-                                Log.i("DATA", data);
                                 Toast.makeText(MainActivity.this, data, Toast.LENGTH_SHORT).show();
                             }
                         });
@@ -104,18 +101,17 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        readOne.setOnClickListener(new View.OnClickListener() {
+        findOne.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        String data = t1y.readOne("student", "65431b5f7ed5bb441885c095");
+                        String data = t1y.findOne("student", "65431b5f7ed5bb441885c095"); // 查询 student 表中 ObjectID 为 65431b5f7ed5bb441885c095 的数据
                         createOne.post(new Runnable() {
                             @Override
                             public void run() {
                                 result.setText(data);
-                                Log.i("DATA", data);
                                 Toast.makeText(MainActivity.this, data, Toast.LENGTH_SHORT).show();
                             }
                         });
@@ -124,18 +120,17 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        readAll.setOnClickListener(new View.OnClickListener() {
+        findAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        String data = t1y.readAll("student", 1, 10);
+                        String data = t1y.findAll("student", 1, 10); // 查询 student 集合中第1页的全部数据，每页10条
                         createOne.post(new Runnable() {
                             @Override
                             public void run() {
                                 result.setText(data);
-                                Log.i("DATA", data);
                                 Toast.makeText(MainActivity.this, data, Toast.LENGTH_SHORT).show();
                             }
                         });

@@ -46,7 +46,7 @@ public class T1YClient {
      * @param params 数据（JSON 格式）
      */
     public <T> String createOne(String collection, T params) {
-        return request("/v5/classes/" + collection, gson.toJson(params), "POST");
+        return request("/v5/classes/" + collection, this.gson.toJson(params), "POST");
     }
 
     /**
@@ -67,7 +67,7 @@ public class T1YClient {
      * @param <T>
      */
     public <T> String updateOne(String collection, String objectId, T params) {
-        return request("/v5/classes/" + collection + "/" + objectId, gson.toJson(params), "PUT");
+        return request("/v5/classes/" + collection + "/" + objectId, this.gson.toJson(params), "PUT");
     }
 
     /**
@@ -95,7 +95,7 @@ public class T1YClient {
      * @param params 参数（详细文档&示例见：https://t1y.net/docs/data/create-batch.html && https://t1y.net/docs/function/create-many.html）
      */
     public <T> String createMany(String collection, T params) {
-        return request("/v5/classes/" + collection + "/batch", gson.toJson(params), "POST");
+        return request("/v5/classes/" + collection + "/batch", this.gson.toJson(params), "POST");
     }
 
     /**
@@ -104,7 +104,7 @@ public class T1YClient {
      * @param params 参数（详细文档&示例见：https://t1y.net/docs/data/delete-batch.html && https://t1y.net/docs/function/delete-many.html）
      */
     public <T> String deleteMany(String collection, T params) {
-        return request("/v5/classes/" + collection + "/batch", gson.toJson(params), "DELETE");
+        return request("/v5/classes/" + collection + "/batch", this.gson.toJson(params), "DELETE");
     }
 
     /**
@@ -113,7 +113,7 @@ public class T1YClient {
      * @param params 参数（详细文档&示例见：https://t1y.net/docs/data/update-batch.html && https://t1y.net/docs/function/update-many.html）
      */
     public <T> String updateMany(String collection, T params) {
-        return request("/v5/classes/" + collection + "/batch", gson.toJson(params), "PUT");
+        return request("/v5/classes/" + collection + "/batch", this.gson.toJson(params), "PUT");
     }
 
     /**
@@ -126,11 +126,11 @@ public class T1YClient {
      */
     public <T> String query(String collection, T filter, int page, int size, T sort) {
         JsonObject jsonObject = new JsonObject();
-        jsonObject.add("body", gson.toJsonTree(filter));
+        jsonObject.add("body", this.gson.toJsonTree(filter));
         jsonObject.addProperty("page", page);
         jsonObject.addProperty("size", size);
-        jsonObject.add("sort", gson.toJsonTree(sort));
-        return request("/v5/classes/" + collection + "/query", gson.toJson(jsonObject), "POST");
+        jsonObject.add("sort", this.gson.toJsonTree(sort));
+        return request("/v5/classes/" + collection + "/query", this.gson.toJson(jsonObject), "POST");
     }
 
     /**
@@ -139,7 +139,7 @@ public class T1YClient {
      * @param params 聚合查询请求体（详细文档&示例见：https://t1y.net/docs/data/aggregate.html && https://t1y.net/docs/function/aggregate.html）
      */
     public <T> String aggregate(String collection, T params) {
-        return request("/v5/classes/" + collection + "/aggregate", gson.toJson(params), "POST");
+        return request("/v5/classes/" + collection + "/aggregate", this.gson.toJson(params), "POST");
     }
 
     /**
@@ -184,7 +184,7 @@ public class T1YClient {
         jsonObject.addProperty("to", to);
         jsonObject.addProperty("subject", subject);
         jsonObject.addProperty("body", body);
-        return request("/v5/sys/email", gson.toJson(jsonObject), "POST");
+        return request("/v5/sys/email", this.gson.toJson(jsonObject), "POST");
     }
 
     /**
@@ -201,7 +201,7 @@ public class T1YClient {
      * @param params 传递给函数的参数（JSON 类型）
      */
     public <T> String callFunc(String name, T params) {
-        return request("/" + this.appId + "/" + name, gson.toJson(params), "POST");
+        return request("/" + this.appId + "/" + name, this.gson.toJson(params), "POST");
     }
 
     /**
@@ -213,22 +213,22 @@ public class T1YClient {
      */
     public String request(String path, String params, String method) {
         RequestBody requestBody = null;
-        if (!method.equals("GET") && params != null) {
-            requestBody = RequestBody.create(params, MediaType.parse("application/json"));
+        if (!method.equals("GET")) {
+            requestBody = params != null ? RequestBody.create(params, MediaType.parse("application/json")) : null;
         }
         String timestamp = String.valueOf(System.currentTimeMillis() / 1000);
         Request.Builder requestBuilder = new Request.Builder()
-                .url(this.baseUrl + HttpUrl.parse(this.baseUrl + path).newBuilder().build().encodedPath())
-                .method(method, requestBody)
+                .url(this.baseUrl + path)
+                .method(method, params != null ? requestBody : null)
                 .header("Content-Type", "application/json")
                 .header("X-T1Y-Application-ID", this.appId)
                 .header("X-T1Y-Api-Key", this.apiKey)
                 .header("X-T1Y-Safe-NonceStr", MD5(timestamp))
                 .header("X-T1Y-Safe-Timestamp", timestamp)
-                .header("X-T1Y-Safe-Sign", MD5(HttpUrl.parse(baseUrl + path).newBuilder().build().encodedPath() + this.appId + this.apiKey + MD5(timestamp) + timestamp + this.secretKey));
+                .header("X-T1Y-Safe-Sign", MD5(HttpUrl.parse(this.baseUrl + path).newBuilder().build().encodedPath() + this.appId + this.apiKey + MD5(timestamp) + timestamp + this.secretKey));
         Request request = requestBuilder.build();
         try {
-            Response response = client.newCall(request).execute();
+            Response response = this.client.newCall(request).execute();
             String responseBody = response.body().string();
             Log.i("T1Y", responseBody);
             return responseBody;

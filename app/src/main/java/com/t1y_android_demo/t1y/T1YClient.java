@@ -214,7 +214,7 @@ public class T1YClient {
     public String request(String path, String params, String method) {
         RequestBody requestBody = null;
         if (!method.equals("GET")) {
-            requestBody = params != null ? RequestBody.create(params, MediaType.parse("application/json")) : null;
+            requestBody = params != null ? RequestBody.create(params, MediaType.parse("application/json")) : RequestBody.create("{}", MediaType.parse("application/json"));
         }
         String timestamp = String.valueOf(System.currentTimeMillis() / 1000);
         Request.Builder requestBuilder = new Request.Builder()

@@ -219,7 +219,7 @@ public class T1YClient {
         String timestamp = String.valueOf(System.currentTimeMillis() / 1000);
         Request.Builder requestBuilder = new Request.Builder()
                 .url(this.baseUrl + path)
-                .method(method, params != null ? requestBody : null)
+                .method(method, !method.equals("GET") ? requestBody : null)
                 .header("Content-Type", "application/json")
                 .header("X-T1Y-Application-ID", this.appId)
                 .header("X-T1Y-Api-Key", this.apiKey)
